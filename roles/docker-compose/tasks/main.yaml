@@ -16,6 +16,10 @@
       repo: "{{ docker_repo }}"
       state: present
 
+  - name: pip install docker-compose
+    pip:
+      name: docker-compose
+
   - name: Install Docker
     apt: name={{ docker_packges }} state=latest update_cache=yes
 

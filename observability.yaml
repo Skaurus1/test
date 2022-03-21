@@ -1,0 +1,6 @@
+---
+- hosts: test-hosts
+  roles:
+    - observability
+  become: yes
+  remote_user: admin

@@ -1,0 +1,17 @@
+---
+ - name: Create Storage directory
+   file:
+     path: /storage/observability
+     state: directory
+     recurse: yes
+
+ - name: copy Docker Compose files
+   template:
+     src: docker-compose.yaml.j2
+     dest: /storage/observability/docker-compose.yaml
+
+ - name: deploy Docker Compose
+   docker_compose:
+    project_src: /storage/observability
+    files:
+    - docker-compose.yaml
