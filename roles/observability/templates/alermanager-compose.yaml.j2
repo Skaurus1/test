@@ -1,0 +1,33 @@
+version: "3.4"
+
+x-logging: &logging
+  logging:
+    driver: loki
+    options:
+      loki-url: "http://127.0.0.1:3100/loki/api/v1/push"
+      mode: non-blocking
+      loki-retries: "3"
+      loki-timeout: "5s"
+      loki-batch-size: "10"
+      loki-external-labels: job=tools
+
+services:
+    alertmanager:
+        image: prom/alertmanager:latest
+        volumes:
+            - /storage/observability/alertmanager/alertmanager.yaml:/etc/alertmanager/alertmanager.yaml
+            - /storage/observability/alertmanager/alertmanager_data:/data:rw
+        command: >-
+            --config.file=/etc/alertmanager/alertmanager.yaml
+            --storage.path=/data
+        ports:
+            - 9093:9093
+        networks:
+            - private
+            - world
+        <<: *logging
+
+networks:
+  world:
+  private:
+    internal: true

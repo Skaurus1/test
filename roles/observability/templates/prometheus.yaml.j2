@@ -1,0 +1,62 @@
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+
+  external_labels:
+      monitor: 'my-project'
+
+rule_files:
+  - 'rules.yaml'
+
+alerting:
+  alertmanagers:
+  - scheme: http
+    static_configs:
+    - targets:
+      - "alertmanager:9093"
+
+scrape_configs:
+
+  - job_name: 'cadvisor_job'
+
+    scrape_interval: 5s
+
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+    relabel_configs:
+      - source_labels: [__meta_docker_container_label_prometheus]
+        action: keep
+        regex: .+
+      - source_labels: [__meta_docker_network_ip]
+        action: replace
+        target_label: __address__
+        replacement: $1:8080
+      - source_labels: [__meta_docker_network_internal]
+        action: replace
+        target_label: internal_net
+      - source_labels: [__address__]
+        action: replace
+        regex: "([^:]+):\\d+"
+        target_label: instance
+
+  - job_name: 'nodeexporter_job'
+
+    scrape_interval: 5s
+
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+    relabel_configs:
+      - source_labels: [__meta_docker_container_label_prometheus]
+        action: keep
+        regex: .+
+      - source_labels: [__meta_docker_network_ip]
+        action: replace
+        target_label: __address__
+        replacement: $1:9100
+      - source_labels: [__meta_docker_network_internal]
+        action: replace
+        target_label: internal_net
+      - source_labels: [__address__]
+        action: replace
+        regex: "([^:]+):\\d+"
+        target_label: instance

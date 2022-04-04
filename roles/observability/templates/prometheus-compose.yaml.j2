@@ -1,0 +1,39 @@
+version: "3.4"
+
+x-logging: &logging
+  logging:
+    driver: loki
+    options:
+      loki-url: "http://127.0.0.1:3100/loki/api/v1/push"
+      mode: non-blocking
+      loki-retries: "3"
+      loki-timeout: "5s"
+      loki-batch-size: "10"
+      loki-external-labels: job=tools
+
+services:
+    prometheus:
+        image: prom/prometheus:v2.34.0
+        user: root
+        ports:
+            - "9090:9090"
+        volumes:
+            - /storage/observability/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
+            - /storage/observability/prometheus/rules.yaml:/etc/prometheus/rules.yaml
+            - /storage/observability/prometheus/prometheus_data/:/prometheus:rw
+            - /var/run/docker.sock:/var/run/docker.sock
+        networks:
+            - private
+            - world
+        command: >-
+            --config.file=/etc/prometheus/prometheus.yaml
+            --storage.tsdb.path=/prometheus
+            --web.console.libraries=/usr/share/prometheus/console_libraries
+            --web.console.templates=/usr/share/prometheus/consoles
+        privileged: true
+        <<: *logging
+
+networks:
+  world:
+  private:
+    internal: true

@@ -1,0 +1,33 @@
+version: "3.4"
+
+x-logging: &logging
+  logging:
+    driver: loki
+    options:
+      loki-url: "http://127.0.0.1:3100/loki/api/v1/push"
+      mode: non-blocking
+      loki-retries: "3"
+      loki-timeout: "5s"
+      loki-batch-size: "10"
+      loki-external-labels: job=tools
+
+services:
+    grafana:
+        image: grafana/grafana:latest
+        ports:
+            - "3000:3000"
+        environment:
+            GF_SECURITY_ADMIN_USER: admin
+            GF_SECURITY_ADMIN_PASSWORD: test
+            GF_PATHS_PROVISIONING: '/app.cfg/provisioning'
+        volumes:
+            - ./grafana:/app.cfg
+        networks:
+            - world
+            - private
+        <<: *logging
+
+networks:
+    world:
+    private:
+        internal: true
