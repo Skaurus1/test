@@ -3,6 +3,5 @@
   roles:
     - docker-compose
   become: yes
-  remote_user: admin
   vars_files:
      - roles/docker-compose/vars/default.yaml

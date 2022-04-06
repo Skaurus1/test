@@ -8,4 +8,3 @@
     - nodeexporter
     - prometheus
   become: yes
-  remote_user: admin
