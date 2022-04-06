@@ -4,7 +4,7 @@ route:
 receivers:
   - name: 'smtp-gmail'
     email_configs:
-    - to: derkachev.igor@gmail.com
+    - to: {{ mail_to }}
       from: {{ auth_username }}
       require_tls: true
       auth_username: {{ auth_username }}
