@@ -1,0 +1,31 @@
+---
+ - name: Create Storage directory
+   file:
+     path: "{{ item }}"
+     state: directory
+     recurse: yes
+   with_items:
+   - {dir: '/storage/observability/loki/'}
+
+ - name: Create Storage subdirectory
+   file:
+     path: "{{ item.dir }}"
+     state: directory
+     owner: "{{ item.owner }}"
+   with_items:
+   - {dir: '/storage/observability/loki/loki_data/', owner: '10001'}
+
+ - name: copyfiles
+   template:
+     src: "{{ item.src }}"
+     dest: "{{ item.dest }}"
+   with_items:
+   - {src: 'loki-compose.yaml.j2',dest: '/storage/observability/loki-compose.yaml'}
+   - {src: 'loki.yaml.j2',dest: '/storage/observability/loki/loki.yaml'}
+   notify: Restart loki
+
+ - name: Enable loki
+   docker_compose:
+     project_src: /storage/observability
+     files:
+     - loki-compose.yaml

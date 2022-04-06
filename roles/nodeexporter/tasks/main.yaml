@@ -1,0 +1,22 @@
+---
+ - name: Create Storage directory
+   file:
+     path: "{{ item }}"
+     state: directory
+     recurse: yes
+   with_items:
+   - {dir: '/storage/observability/'}
+
+ - name: copy Docker Compose files
+   template:
+     src: "{{ item.src }}"
+     dest: "{{ item.dest }}"
+   with_items:
+   - {src: 'nodeexporter-compose.yaml.j2',dest: '/storage/observability/nodeexporter-compose.yaml'}
+   notify: Restart nodeexporter
+
+ - name: Enable nodeexporter
+   docker_compose:
+     project_src: /storage/observability
+     files:
+     - nodeexporter-compose.yaml

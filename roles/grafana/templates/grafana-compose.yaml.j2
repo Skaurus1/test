@@ -13,12 +13,13 @@ x-logging: &logging
 
 services:
     grafana:
-        image: grafana/grafana:latest
+        image: grafana/grafana:{{ grafana_version }}
+        restart: unless-stopped
         ports:
             - "3000:3000"
         environment:
-            GF_SECURITY_ADMIN_USER: admin
-            GF_SECURITY_ADMIN_PASSWORD: test
+            GF_SECURITY_ADMIN_USER: {{ vault_user }}
+            GF_SECURITY_ADMIN_PASSWORD: {{ vault_pass }}
             GF_PATHS_PROVISIONING: '/app.cfg/provisioning'
         volumes:
             - ./grafana:/app.cfg

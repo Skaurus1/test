@@ -1,0 +1,34 @@
+---
+ - name: Create Storage directory
+   file:
+     path: "{{ item }}"
+     state: directory
+     recurse: yes
+   with_items:
+   - {dir: '/storage/observability/alertmanager/'}
+
+ - name: Create Storage subdirectory
+   file:
+     path: "{{ item.dir }}"
+     state: directory
+     owner: "{{ item.owner }}"
+   with_items:
+   - {dir: '/storage/observability/alertmanager/alertmanager_data/', owner: '65534'}
+
+ - name: Include sensitive vars
+   include_vars: vault.yaml
+
+ - name: copy files
+   template:
+     src: "{{ item.src }}"
+     dest: "{{ item.dest }}"
+   with_items:
+   - {src: 'alertmanager.yaml.j2',dest: '/storage/observability/alertmanager/alertmanager.yaml'}
+   - {src: 'alertmanager-compose.yaml.j2',dest: '/storage/observability/alertmanager-compose.yaml'}
+   notify: Restart alertmanager
+
+ - name: Enable alertmanager
+   docker_compose:
+     project_src: /storage/observability
+     files:
+     - alertmanager-compose.yaml

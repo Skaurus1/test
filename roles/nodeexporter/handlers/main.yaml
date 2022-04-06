@@ -1,0 +1,7 @@
+---
+  - name: Restart nodeexporter
+    docker_compose:
+      restarted: yes
+      project_src: /storage/observability
+      files:
+      - nodeexporter-compose.yaml

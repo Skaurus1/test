@@ -13,7 +13,8 @@ x-logging: &logging
 
 services:
     loki:
-        image: grafana/loki:latest
+        image: grafana/loki:{{ loki_version }}
+        restart: unless-stopped
         command: -config.file=/etc/loki/loki.yaml
         volumes:
             - /storage/observability/loki/loki_data/:/loki:rw

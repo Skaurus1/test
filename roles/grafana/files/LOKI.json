@@ -1,0 +1,156 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 2,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P982945308D3682D1"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 231
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "id"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 335
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "line {compose_project=\"observability\", compose_service=\"alertmanager\", filename=\"/var/log/docker/cc720c21e408eb5754da1809045db70417fd43077a60f6ae14780111aa6386b5/json.log\", host=\"test\", job=\"tools\", source=\"stderr\"}"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 1067
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "line {compose_project=\"observability\", compose_service=\"grafana\", filename=\"/var/log/docker/0e8e06f932c5d337a6f26e338cc0a67dc4366d9d7524d037e52b3fc11eee76e4/json.log\", host=\"test\", job=\"tools\", source=\"stdout\"}"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 1075
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 22,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "8.4.5",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P982945308D3682D1"
+          },
+          "expr": "{compose_project=\"observability\"}",
+          "refId": "A"
+        }
+      ],
+      "title": "LOGS",
+      "type": "table"
+    }
+  ],
+  "schemaVersion": 35,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "LOKI",
+  "uid": "usGk8i8nz",
+  "version": 5,
+  "weekStart": ""
+}

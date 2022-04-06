@@ -5,10 +5,7 @@
      state: directory
      recurse: yes
    with_items:
-   - {dir: '/storage/observability/prometheus/'}
-   - {dir: '/storage/observability/loki/'}
    - {dir: '/storage/observability/grafana/'}
-   - {dir: '/storage/observability/alertmanager/'}
 
  - name: Create Storage subdirectory
    file:
@@ -16,40 +13,35 @@
      state: directory
      owner: "{{ item.owner }}"
    with_items:
-   - {dir: '/storage/observability/loki/loki_data/', owner: '10001'}
-   - {dir: '/storage/observability/prometheus/prometheus_data/', owner: '65534'}
    - {dir: '/storage/observability/grafana/', owner: '472'}
    - {dir: '/storage/observability/grafana/provisioning/', owner: '472'}
    - {dir: '/storage/observability/grafana/provisioning/datasources/', owner: '472'}
    - {dir: '/storage/observability/grafana/provisioning/dashboards/', owner: '472'}
-   - {dir: '/storage/observability/alertmanager/alertmanager_data/', owner: '65534'}
 
+ - name: Include sensitive vars
+   include_vars: vault.yaml
 
  - name: copy Docker Compose files
    template:
      src: "{{ item.src }}"
      dest: "{{ item.dest }}"
    with_items:
-   - {src: 'docker-compose.yaml.j2',dest: '/storage/observability/docker-compose.yaml'}
-   - {src: 'loki-compose.yaml.j2',dest: '/storage/observability/loki-compose.yaml'}
-   - {src: 'prometheus.yaml.j2',dest: '/storage/observability/prometheus/prometheus.yaml'}
+   - {src: 'grafana-compose.yaml.j2',dest: '/storage/observability/grafana-compose.yaml'}
    - {src: 'datasources.yaml.j2',dest: '/storage/observability/grafana/provisioning/datasources/datasources.yaml'}
    - {src: 'dashboards.yaml.j2',dest: '/storage/observability/grafana/provisioning/dashboards/dashboards.yaml'}
-   - {src: 'loki.yaml.j2',dest: '/storage/observability/loki/loki.yaml'}
-   - {src: 'alertmanager.yaml.j2',dest: '/storage/observability/alertmanager/alertmanager.yaml'}
-
-
+   notify: Restart grafana
 
  - name: copy files
    copy:
      src: "{{ item.src }}"
      dest: "{{ item.dest }}"
    with_items:
-   - {src: 'Basic-1648509790225.json',dest: '/storage/observability/grafana/provisioning/dashboards/Basic-1648509790225.json'}
-   - {src: 'rules.yaml',dest: '/storage/observability/prometheus/rules.yaml'}
+   - {src: 'Basic.json',dest: '/storage/observability/grafana/provisioning/dashboards/Basic.json'}
+   - {src: 'LOKI.json',dest: '/storage/observability/grafana/provisioning/dashboards/LOKI.json'}
+   notify: Restart grafana
 
- - name: deploy Docker Compose
+ - name: Enable grafana
    docker_compose:
      project_src: /storage/observability
      files:
-     - docker-compose.yaml
+     - grafana-compose.yaml

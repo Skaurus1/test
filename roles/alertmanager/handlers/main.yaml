@@ -1,0 +1,7 @@
+---
+  - name: Restart alertmanager
+    docker_compose:
+      restarted: yes
+      project_src: /storage/observability
+      files:
+      - alertmanager-compose.yaml

@@ -33,7 +33,7 @@
       append: yes
 
   - name: Enable loki plugin
-    docker.docker_plugin:
+    community.docker.docker_plugin:
       plugin_name: grafana/loki-docker-driver:latest
       alias: loki
       state: enable

@@ -1,0 +1,7 @@
+---
+  - name: Restart cadvisor
+    docker_compose:
+      restarted: yes
+      project_src: /storage/observability
+      files:
+      - cadvisor-compose.yaml

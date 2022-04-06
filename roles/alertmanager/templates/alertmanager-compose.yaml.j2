@@ -13,7 +13,8 @@ x-logging: &logging
 
 services:
     alertmanager:
-        image: prom/alertmanager:latest
+        image: prom/alertmanager:{{ alertmanager_version }}
+        restart: unless-stopped
         volumes:
             - /storage/observability/alertmanager/alertmanager.yaml:/etc/alertmanager/alertmanager.yaml
             - /storage/observability/alertmanager/alertmanager_data:/data:rw

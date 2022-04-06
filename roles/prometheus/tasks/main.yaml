@@ -1,0 +1,39 @@
+---
+ - name: Create Storage directory
+   file:
+     path: "{{ item }}"
+     state: directory
+     recurse: yes
+   with_items:
+   - {dir: '/storage/observability/prometheus/'}
+
+ - name: Create Storage subdirectory
+   file:
+     path: "{{ item.dir }}"
+     state: directory
+     owner: "{{ item.owner }}"
+   with_items:
+   - {dir: '/storage/observability/prometheus/prometheus_data/', owner: '65534'}
+
+ - name: copy Docker Compose files
+   template:
+     src: "{{ item.src }}"
+     dest: "{{ item.dest }}"
+   with_items:
+   - {src: 'prometheus.yaml.j2',dest: '/storage/observability/prometheus/prometheus.yaml'}
+   - {src: 'prometheus-compose.yaml.j2',dest: '/storage/observability/prometheus-compose.yaml'}
+   notify: Restart prometheus
+
+ - name: copy files
+   copy:
+     src: "{{ item.src }}"
+     dest: "{{ item.dest }}"
+   with_items:
+   - {src: 'rules.yaml',dest: '/storage/observability/prometheus/rules.yaml'}
+   notify: Restart prometheus
+
+ - name: Enable prometheus
+   docker_compose:
+     project_src: /storage/observability
+     files:
+     - prometheus-compose.yaml

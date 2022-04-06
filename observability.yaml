@@ -1,6 +1,11 @@
 ---
 - hosts: test-hosts
   roles:
-    - observability
+    - loki
+    - alertmanager
+    - cadvisor
+    - grafana
+    - nodeexporter
+    - prometheus
   become: yes
   remote_user: admin

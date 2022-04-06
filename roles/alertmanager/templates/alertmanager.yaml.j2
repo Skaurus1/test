@@ -1,0 +1,14 @@
+route:
+  receiver: smtp-gmail
+
+receivers:
+  - name: 'smtp-gmail'
+    email_configs:
+    - to: derkachev.igor@gmail.com
+      from: {{ auth_username }}
+      require_tls: true
+      auth_username: {{ auth_username }}
+      auth_password: {{ auth_password }}
+      auth_identity: {{ auth_username }}
+      smarthost: {{ smarthost }}
+      send_resolved: true

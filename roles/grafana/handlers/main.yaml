@@ -1,0 +1,7 @@
+---
+  - name: Restart grafana
+    docker_compose:
+      restarted: yes
+      project_src: /storage/observability
+      files:
+      - grafana-compose.yaml

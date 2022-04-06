@@ -1,0 +1,22 @@
+---
+ - name: Create Storage directory
+   file:
+     path: "{{ item }}"
+     state: directory
+     recurse: yes
+   with_items:
+   - {dir: '/storage/observability/'}
+
+ - name: copy files
+   template:
+     src: "{{ item.src }}"
+     dest: "{{ item.dest }}"
+   with_items:
+   - {src: 'cadvisor-compose.yaml.j2',dest: '/storage/observability/cadvisor-compose.yaml'}
+   notify: Restart cadvisor
+
+ - name: Enable cadvisor
+   docker_compose:
+     project_src: /storage/observability
+     files:
+     - cadvisor-compose.yaml
