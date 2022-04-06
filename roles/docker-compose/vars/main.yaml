@@ -1,5 +1,4 @@
 ---
-admin_user: {{ ansible_user }}
 docker_required_packages:
   - "apt-transport-https"
   - "ca-certificates"
