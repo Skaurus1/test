@@ -10,3 +10,5 @@ docker-compose.yaml - install docker and docker-compose
 observability.yaml - install Grafana/Prometheus/AlertManager/Loki + node-exporter/cadvisor
 
 fullinstall.yaml - include docker-compose.yaml and observability.yaml
+
+grafana listens on port 3000
