@@ -1,6 +1,6 @@
 Install docker-compose and Grafana/Prometheus/AlertManager/Loki + node-exporter/cadvisor
 
-Only Ubuntu Ubuntu 20.04/LTS
+Only Ubuntu 20.04/LTS
 
 1. Set hosts and users with root permissions in inventory/hosts.ini
 2. Specify email for notification in role/alertmanager/vars/main.yaml
