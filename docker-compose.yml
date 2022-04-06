@@ -3,5 +3,3 @@
   roles:
     - docker-compose
   become: yes
-  vars_files:
-     - roles/docker-compose/vars/default.yaml
