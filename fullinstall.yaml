@@ -1,0 +1,11 @@
+---
+- hosts: test-hosts
+  roles:
+    - docker-compose
+    - loki
+    - alertmanager
+    - cadvisor
+    - grafana
+    - nodeexporter
+    - prometheus
+  become: yes
