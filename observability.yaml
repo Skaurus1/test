@@ -1,5 +1,5 @@
 ---
-- hosts: test-hosts
+- hosts: prod
   roles:
     - loki
     - alertmanager

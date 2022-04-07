@@ -15,9 +15,6 @@
    with_items:
    - {dir: '/storage/observability/alertmanager/alertmanager_data/', owner: '65534'}
 
- - name: Include sensitive vars
-   include_vars: vault.yaml
-
  - name: copy files
    template:
      src: "{{ item.src }}"

@@ -18,9 +18,6 @@
    - {dir: '/storage/observability/grafana/provisioning/datasources/', owner: '472'}
    - {dir: '/storage/observability/grafana/provisioning/dashboards/', owner: '472'}
 
- - name: Include sensitive vars
-   include_vars: vault.yaml
-
  - name: copy Docker Compose files
    template:
      src: "{{ item.src }}"

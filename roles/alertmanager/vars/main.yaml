@@ -1,3 +1,0 @@
----
-  alertmanager_version: "v0.24.0"
-  mail_to: "example@domain.org"
