@@ -22,7 +22,7 @@ services:
             GF_SECURITY_ADMIN_PASSWORD: {{ grafana_pass }}
             GF_PATHS_PROVISIONING: '/app.cfg/provisioning'
         volumes:
-            - ./grafana:/app.cfg
+            - /storage/observability/grafana:/app.cfg
         networks:
             - world
             - private
