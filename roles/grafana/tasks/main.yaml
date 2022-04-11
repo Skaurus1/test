@@ -33,8 +33,9 @@
      src: "{{ item.src }}"
      dest: "{{ item.dest }}"
    with_items:
-   - {src: 'Basic.json',dest: '/storage/observability/grafana/provisioning/dashboards/Basic.json'}
+   - {src: 'host.json',dest: '/storage/observability/grafana/provisioning/dashboards/host.json'}
    - {src: 'LOKI.json',dest: '/storage/observability/grafana/provisioning/dashboards/LOKI.json'}
+   - {src: 'containers.json',dest: '/storage/observability/grafana/provisioning/dashboards/containers.json'}
    notify: Restart grafana
 
  - name: Enable grafana

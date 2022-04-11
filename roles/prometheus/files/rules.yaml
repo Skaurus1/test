@@ -7,23 +7,106 @@ groups:
     labels:
       severity: 'critical'
     annotations:
-      title: 'Instance {{ $labels.instance }} down'
-      description: '{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minute.'
+      summary: "Instance {{ $labels.instance }} down"
+      description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minute"
 
   - alert: HostOutOfMemory
-    expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 90
+    expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 20
     for: 1m
     labels:
       severity: 'warning'
     annotations:
-      summary: Host out of memory (instance {{ $labels.instance }})
-      description: "Node memory is filling up (< 90% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+      summary: "Host out of memory (instance {{ $labels.instance }})"
+      description: "Node memory is filling up (< 90% left)\n  VALUE = {{ $value }}"
 
-  - alert: HighUsage
+  - alert: HighUsageCPU
     expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[10s])) * 100) > 80
     for: 1m
     labels:
       severity: 'critical'
     annotations:
       summary: "High usage on {{ $labels.instance }}"
-      description: "{{ $labels.instance }} has a average CPU idle (current value: {{ $value }}s)"
+      description: "{{ $labels.instance }} has a average CPU idle (current value: {{ $value }}%)"
+
+  - alert: HighLoadAverageCPU
+    expr: max by (instance) (node_load1) / count by (instance) (node_cpu_seconds_total{mode="idle"}) > 0.75
+    for: 1m
+    labels:
+      severity: 'warning'
+    annotations:
+      summary: "High load average"
+      description: "{{ $labels.instance }} has a max load average1 > 0.75 per core"
+
+  - alert: HighLoadAverageCPU
+    expr: max by (instance) (node_load1) / count by (instance) (node_cpu_seconds_total{mode="idle"}) > 1
+    for: 1m
+    labels:
+      severity: 'critical'
+    annotations:
+      summary: "High load average"
+      description: "{{ $labels.instance }} has a max load average1 > 1 per core"
+
+  - alert: PageMajorFaults
+    expr: sum by (instance) (rate(node_vmstat_pgmajfault[1m])) > 1000
+    for: 1m
+    labels:
+      severity: 'critical'
+    annotations:
+      summary: "Page major faults"
+      description: "{{ $labels.instance }} has a rate page major faults {{ $value }}"
+
+  - alert: SwapInSwapOut
+    expr: sum by (instance) (rate(node_vmstat_pswpin[1m])) + sum by (instance) (rate(node_vmstat_pswpout[1m])) > 0
+    labels:
+      severity: 'warning'
+    annotations:
+      summary: "Active usage swap"
+      description: "{{ $labels.instance }} swap in/out per minute = {{ $value }}"
+
+  - alert: NetworkErrors
+    expr: sum by (instance,device) (rate(node_network_transmit_errs_total{device!="lo"}[1m])) + sum by (instance,device) (rate(node_network_receive_errs_total{device!="lo"}[1m])) > 0
+    labels:
+      severity: 'warning'
+    annotations:
+      summary: "Network errors"
+      description: "{{ $labels.instance }} network errors on {{ $labels.device }}\n Value = {{ $value }}"
+
+  - alert: NetworkDrops
+    expr: sum by (instance,device) (rate(node_network_transmit_drop_total{device!="lo"}[1m])) + sum by (instance,device) (rate(node_network_receive_drop_total{device!="lo"}[1m])) > 0
+    labels:
+      severity: 'warning'
+    annotations:
+      summary: "Network Drops"
+      description: "{{ $labels.instance }} network drop on {{ $labels.device }}\n Value = {{ $value }}"
+
+  - alert: DiskWriteLatency
+    expr: sum by (instance,device) (rate(node_disk_write_time_seconds_total[10s])) / sum by (instance,device) (rate(node_disk_writes_completed_total[10s])) > 0.015
+    labels:
+      severity: 'warning'
+    annotations:
+      summary: "Disk Write Latency > 15ms"
+      description: "{{ $labels.instance }} disk write latency on {{ $labels.device }} = {{ $value }}s"
+
+  - alert: DiskWriteLatency
+    expr: sum by (instance,device) (rate(node_disk_write_time_seconds_total[10s])) / sum by (instance,device) (rate(node_disk_writes_completed_total[10s])) > 0.050
+    labels:
+      severity: 'critical'
+    annotations:
+      summary: "Disk Write Latency > 50ms"
+      description: "{{ $labels.instance }} disk write latency on {{ $labels.device }} = {{ $value }}s"
+
+  - alert: DiskReadLatency
+    expr: sum by (instance,device) (rate(node_disk_read_time_seconds_total[10s])) / sum by (instance,device) (rate(node_disk_reads_completed_total[10s])) > 0.015
+    labels:
+      severity: 'warning'
+    annotations:
+      summary: "Disk Read Latency > 15ms"
+      description: "{{ $labels.instance }} disk read latency on {{ $labels.device }} = {{ $value }}s"
+
+  - alert: DiskReadLatency
+    expr: sum by (instance,device) (rate(node_disk_read_time_seconds_total[10s])) / sum by (instance,device) (rate(node_disk_reads_completed_total[10s])) > 0.050
+    labels:
+      severity: 'critical'
+    annotations:
+      summary: "Disk Read Latency > 50ms"
+      description: "{{ $labels.instance }} disk read latency on {{ $labels.device }} = {{ $value }}s"
